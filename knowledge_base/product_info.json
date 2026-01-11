@@ -1,0 +1,41 @@
+{
+    "company": {
+        "name": "AutoStream",
+        "description": "A SaaS product that provides automated video editing tools for content creators"
+    },
+    "pricing": {
+        "plans": [
+            {
+                "name": "Basic Plan",
+                "price": 29,
+                "features": [
+                    "10 videos/month",
+                    "720p resolution"
+                ]
+            },
+            {
+                "name": "Pro Plan",
+                "price": 79,
+                "features": [
+                    "Unlimited videos",
+                    "4K resolution",
+                    "AI captions"
+                ]
+            }
+        ]
+    },
+    "policies": {
+        "refund": "No refunds after 7 days",
+        "support": "24/7 support available only on Pro plan"
+    },
+    "faqs": [
+        {
+            "question": "What platforms do you support?",
+            "answer": "AutoStream supports YouTube, Instagram, TikTok, and other major platforms."
+        },
+        {
+            "question": "Can I upgrade my plan?",
+            "answer": "Yes, you can upgrade from Basic to Pro anytime."
+        }
+    ]
+}
