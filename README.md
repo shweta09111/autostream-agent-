@@ -1,6 +1,38 @@
 # AutoStream AI Agent
 
-Conversational AI agent for AutoStream - an automated video editing SaaS for content creators. Uses LangGraph for state management and RAG for product knowledge.
+AutoStream AI Agent is a conversational AI assistant designed to support the AutoStream SaaS product — an automated video editing platform for content creators.
+
+It uses LangGraph for stateful conversation flows and a RAG pipeline to answer user queries about pricing, features, and policies. The agent also detects high-intent users and collects lead information like name, email, and platform before triggering a lead capture tool.
+
+## Features
+
+- Intent Detection (greeting, pricing inquiry, product questions, high-intent leads)
+- RAG-powered Knowledge Search from local JSON
+- Lead Capture Workflow with sequential field collection
+- State Management across multiple conversation turns
+- WhatsApp Integration example with webhooks
+
+## Demo Example
+
+```
+User: Hi, tell me about your pricing.
+Agent: We have two plans - Basic at $29/month (10 videos, 720p) 
+       and Pro at $79/month (unlimited videos, 4K, AI captions).
+
+User: That sounds good, I want to try the Pro plan for my YouTube channel.
+Agent: That's great! I'd love to help you get started. What's your name?
+
+User: John Smith
+Agent: Nice to meet you, John Smith! What's your email address?
+
+User: john@example.com
+Agent: Got it! Which platform do you create content for?
+
+User: YouTube
+Agent: You're all set, John Smith! We'll send your welcome info to john@example.com.
+
+[Lead captured: John Smith, john@example.com, YouTube]
+```
 
 ## How to Run
 
@@ -14,24 +46,34 @@ venv\Scripts\activate
 # activate (mac/linux)
 source venv/bin/activate
 
-# install deps
+# install dependencies
 pip install -r requirements.txt
 
-# set up env
+# set up environment
 cp .env.example .env
-# add your Anthropic API key
+# add your Anthropic API key to .env
 
 # run the agent
 python agent.py
 ```
 
-Type messages to chat, `reset` to start over, `quit` to exit.
+Type messages to chat, `reset` to start new conversation, `quit` to exit.
+
+## Testing
+
+Run `python agent.py` and interact with the agent. Try these test flows:
+
+1. Ask about pricing → Agent retrieves from knowledge base
+2. Say you want to sign up → Agent detects high intent, starts lead collection
+3. Provide name, email, platform → Agent calls `mock_lead_capture()`
+
+The mock function prints the captured lead to console. In production, this would call a CRM API.
 
 ## Architecture (~200 words)
 
 ### Why LangGraph over AutoGen?
 
-I went with LangGraph because it gives more control over conversation flow through its graph-based approach. The main reasons:
+I went with LangGraph because it gives more control over conversation flow through its graph-based approach:
 
 1. **Typed State** - LangGraph uses TypedDict for state, so I can define exactly what data persists across turns (messages, lead_data, current_intent, etc). This made tracking the lead collection flow much cleaner than trying to manage it with AutoGen's message-passing.
 
@@ -84,14 +126,11 @@ def webhook():
         sessions[user_id] = AutoStreamAgent()
     
     response = sessions[user_id].chat(message, thread_id=user_id)
-    
-    # send via WhatsApp API
     send_whatsapp_message(user_id, response)
     return {'status': 'ok'}
 
 @app.route('/webhook', methods=['GET'])
 def verify():
-    # Meta webhook verification
     return request.args.get('hub.challenge')
 ```
 
@@ -120,10 +159,11 @@ autostream-agent/
 └── .env.example
 ```
 
-## Features
+## License
 
-**Intent Detection** - Classifies into: greeting, pricing_inquiry, product_inquiry, high_intent_lead, support_question, farewell
+MIT License
 
-**RAG** - Searches JSON knowledge base for pricing/feature/policy info
+## Author
 
-**Lead Capture** - When high intent detected, collects name → email → platform, then calls `mock_lead_capture(name, email, platform)`
+Shweta Singh  
+[GitHub](https://github.com/YOUR_USERNAME)
